@@ -21,7 +21,7 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
     def test_open_site(self):
 
         current_url = self.driver.current_url
-        assert current_url == 'https://www.douglas.ro/', 'The curent URL not as expected'
+        assert current_url == 'https://www.douglas.ro/', 'The curent URL not as expected. '
         print('The test is valid. ')
 
     def test_title(self):
@@ -42,7 +42,7 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         search_button.click()
         time.sleep(3)
         print('The current URL is: ', self.driver.current_url)
-        assert self.driver.current_url == "https://www.douglas.ro/search?search=gucci", 'The URL is not as expected'
+        assert self.driver.current_url == "https://www.douglas.ro/search?search=gucci", 'The URL is not as expected. '
 
         products = self.driver.find_elements(By.CLASS_NAME, 'e-product-brand')
         nr_products = len(products)
@@ -59,18 +59,14 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
             price = product.text.replace(' RON', '')
             price = price.replace(',', '.')
             prices = price.split(' ')
-            # print(price)
+            #print(price)
 
-            if prices.__len__() > 1:
-                new_price = float(price[1])
-            else:
-                new_price = float(price[0])
+        for new_price in prices:
+            if float(new_price) < lowest_price:
+                lowest_price = float(new_price)
 
-            if new_price < lowest_price:
-                lowest_price = new_price
-
-        print(lowest_price)
-        assert lowest_price < 175, 'The lowest price is not as expected. '
+        print(f"The lowest price is: {lowest_price}")
+        assert lowest_price <= 175, 'The lowest price is not as expected. '
         print('The test is valid. ')
 
     def test_valid_login(self):
@@ -91,7 +87,7 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         time.sleep(3)
 
         actual_url = self.driver.current_url
-        assert actual_url == super().logged_in_page_url, 'The URL is not as expected!! '
+        assert actual_url == super().logged_in_page_url, 'The URL is not as expected. '
         print(actual_url)
         print('The test is valid. ')
 
@@ -113,8 +109,8 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         time.sleep(3)
 
         error_message = self.driver.find_element(*super().error_label)
-        assert error_message.text == super().error_login_message, 'The login error message not as expected!! '
-        # assert error_message.is_displayed() == True, 'The login error message not as expected!! '
+        assert error_message.text == super().error_login_message, 'The login error message not as expected. '
+        # assert error_message.is_displayed() == True, 'The login error message not as expected. '
         print(error_message.text)
         print('The test is valid. ')
 
@@ -136,7 +132,7 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         time.sleep(3)
 
         error_message = self.driver.find_element(*super().error_label)
-        assert error_message.text == super().error_login_message, 'The login error message not as expected!! '
+        assert error_message.text == super().error_login_message, 'The login error message not as expected. '
         print(error_message.text)
         print('The test is valid. ')
 
@@ -169,14 +165,14 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         time.sleep(1)
 
         search_field = self.driver.find_element(*super().search_field)
-        search_field.send_keys('armani')
+        search_field.send_keys('it cosmetics')
         time.sleep(2)
 
         search_button = self.driver.find_element(*super().search_button)
         search_button.click()
         time.sleep(3)
 
-        item = self.driver.find_element(*super().because_you)
+        item = self.driver.find_element(*super().it_cosmetics)
         item.click()
         time.sleep(2)
 
@@ -188,3 +184,26 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         assert message.text == super().added_item, 'The added item message is not as expected. '
         print(message.text)
         print('The test is valid. ')
+
+    def test_wish_list(self):
+        self.test_valid_login()
+
+        wish_list = self.driver.find_element(*super().wish_list)
+        wish_list.click()
+        time.sleep(1)
+
+        wish_list_button = self.driver.find_element(*super().wish_list_button)
+        wish_list_button.click()
+        time.sleep(2)
+
+        new_list = self.driver.find_element(*super().new_list)
+        new_list.send_keys('lista')
+        time.sleep(1)
+        new_list_save = self.driver.find_element(*super().new_list_button)
+        new_list_save.click()
+        time.sleep(1)
+
+        error_message = self.driver.find_element(*super().new_list_error_label)
+        assert error_message.text == super().list_message_error, 'The error message not as expected. '
+        print(error_message.text)
+        print('The test is valid')

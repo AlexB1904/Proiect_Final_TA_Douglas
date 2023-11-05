@@ -7,4 +7,6 @@ class Data:
     valid_email = 'tocmaieu@yahoo.com'
     valid_password = '1234poiu'
     added_item = '1 produs a fost adăugat în coș.'
+    list_message_error = 'Lista nu a putut fi creată. Numele deja a fost folosit pentru o altă listă sau este altă eroare'
+
 
