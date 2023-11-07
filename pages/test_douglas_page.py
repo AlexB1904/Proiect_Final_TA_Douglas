@@ -34,7 +34,7 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         time.sleep(3)
 
         search_field = self.driver.find_element(*super().search_field)
-        # search_field = self.driver.find_element(By.XPATH, '//input[@name="search" and @class="form-control header-search-input"]')
+        #search_field = self.driver.find_element(By.XPATH, '//input[@name="search" and @class="form-control header-search-input"]')
         search_field.send_keys('gucci')
         time.sleep(3)
 
@@ -54,15 +54,17 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
         self.test_search_product()
         products = self.driver.find_elements(By.CLASS_NAME, 'product-price')
         lowest_price = float('inf')
+        prices = []
 
         for product in products:
-            price = product.text.replace(' RON', '')
-            price = price.replace(',', '.')
-            prices = price.split(' ')
-            #print(price)
+            price = product.text.replace(' RON', '').replace(',', '.')
+            prices.append(price)
+            #print(prices)
 
         for new_price in prices:
-            if float(new_price) < lowest_price:
+            if (' 'in new_price):
+                new_price = new_price[new_price.index(' ') +1:]
+            if float(new_price) < float(lowest_price):
                 lowest_price = float(new_price)
 
         print(f"The lowest price is: {lowest_price}")
@@ -110,7 +112,6 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
 
         error_message = self.driver.find_element(*super().error_label)
         assert error_message.text == super().error_login_message, 'The login error message not as expected. '
-        # assert error_message.is_displayed() == True, 'The login error message not as expected. '
         print(error_message.text)
         print('The test is valid. ')
 
@@ -205,5 +206,6 @@ class TestDouglasPage(unittest.TestCase, Data, PageElements):
 
         error_message = self.driver.find_element(*super().new_list_error_label)
         assert error_message.text == super().list_message_error, 'The error message not as expected. '
+        #assert error_message.is_displayed() == True, 'The error message not as expected. '
         print(error_message.text)
         print('The test is valid')
